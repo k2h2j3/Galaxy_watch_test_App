@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:wearable_app/date_parser.dart';
 
+// 데이터 전처리 2(시프트 및 단위 추가)
 class CharacteristicInfo extends StatefulWidget {
   final BluetoothService service;
   final Map<String, List<int>> notifyDatas;
@@ -24,7 +25,9 @@ class _CharacteristicInfoState extends State<CharacteristicInfo> {
     String name = '';
     String properties = '';
     String data = '';
+    // fff3 에서 가져온 데이터 저장되는 리스트
     List<int> datalist = [];
+    // 데이터 전처리 후 저장되는 리스트
     List<int> resultlist = [];
 
     for (BluetoothCharacteristic c in widget.service.characteristics) {
@@ -44,11 +47,17 @@ class _CharacteristicInfoState extends State<CharacteristicInfo> {
         if (widget.notifyDatas.containsKey(c.uuid.toString())) {
           if (widget.notifyDatas[c.uuid.toString()]!.isNotEmpty) {
             data = widget.notifyDatas[c.uuid.toString()].toString();
+            // 데이터 전처리
             datalist = parseData(data);
+            // 기온
             resultlist.add((datalist[2].toUnsigned(16) << 8) + datalist[3].toUnsigned(16));
+            // 습도
             resultlist.add((datalist[4].toUnsigned(16) << 8) + datalist[5].toUnsigned(16));
+            // 기압
             resultlist.add((datalist[6].toUnsigned(16) << 8) + datalist[7].toUnsigned(16));
+            // 풍속
             resultlist.add((datalist[8].toUnsigned(16) << 8) + datalist[9].toUnsigned(16));
+            // 풍향
             resultlist.add((datalist[10].toUnsigned(16) << 8) + datalist[11].toUnsigned(16));
           }
         }
@@ -72,6 +81,7 @@ class _CharacteristicInfoState extends State<CharacteristicInfo> {
     List<Widget> dataWidgets = [];
     int temperatureIndex = 0; // 온도에 해당하는 인덱스
 
+    // 이전 데이터와 비교한 결과 오차 출력(지금은 사용하지 않음)
     if (resultlist.length > temperatureIndex) {
       double currentValue = resultlist[temperatureIndex] / 100;
       double prevValue = prevResultList[temperatureIndex] / 100;

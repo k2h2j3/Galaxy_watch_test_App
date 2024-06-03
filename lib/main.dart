@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: title,
       theme: ThemeData(
         textTheme: TextTheme(
-          bodyText2: TextStyle(fontSize: 12), // Adjust the font size here
+          bodyText2: TextStyle(fontSize: 12),
         ),
       ),
       home: MyHomePage(title: title),
@@ -45,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    // 화면보호기
     Wakelock.enable();
     initBle();
     startScan();
@@ -58,10 +59,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void startScan() async {
+    // 스캔리스트 초기화
     scanResultList.clear();
 
+    // 스캔
     flutterBlue.startScan();
 
+    // 'XMW' 붙은 디바이스 필터링
     flutterBlue.scanResults.listen((results) {
       results.forEach((element) {
         if (element.device.name.startsWith('XMW')) {
@@ -74,14 +78,17 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  // 신호세기 위젯
   Widget deviceSignal(ScanResult r) {
     return Text(r.rssi.toString());
   }
 
+  // Mac 주소 위젯
   Widget deviceMacAddress(ScanResult r) {
     return Text(r.device.id.id);
   }
 
+  // 디바이스 이름 위젯
   Widget deviceName(ScanResult r) {
     String name = '';
 
@@ -113,6 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // 감지된 디바이스 누를시 해당 디바이스 스크린으로 이동
   void onTap(ScanResult r) {
     print('${r.device.name}');
     Navigator.push(
@@ -121,6 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // 감지된 디바이스 정보 위젯
   Widget listItem(ScanResult r) {
     return ListTile(
       onTap: () => onTap(r),
@@ -142,6 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         centerTitle: true,
       ),
+      // 스마트워치에 맞게 위젯으로 감싸기
       body: WatchShape(
         builder: (BuildContext context, WearShape shape, Widget? child) {
           return scanResultList.isEmpty

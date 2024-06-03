@@ -15,9 +15,13 @@ class DeviceScreen extends StatefulWidget {
 
 class _DeviceScreenState extends State<DeviceScreen> {
   FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
+  // 연결 상태 text
   String stateText = 'Connecting';
+  // 연결 버튼 상태
   String connectButtonText = 'Disconnect';
+  // 연결 상태
   BluetoothDeviceState deviceState = BluetoothDeviceState.disconnected;
+  // 리스너
   StreamSubscription<BluetoothDeviceState>? _stateListener;
   List<BluetoothService> bluetoothService = [];
   Map<String, List<int>> notifyDatas = {};
@@ -49,6 +53,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
     }
   }
 
+  // 상태 관리
   setBleConnectionState(BluetoothDeviceState event) {
     switch (event) {
       case BluetoothDeviceState.disconnected:
@@ -71,6 +76,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
     setState(() {});
   }
 
+  // 비밀번호 입력
   Future<void> writePassword() async {
     String password = "101010";
     List<int> passwordBytes = List<int>.filled(20, 0);
@@ -106,6 +112,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
     }
   }
 
+  // 디바이스 연결
   Future<bool> connect() async {
     Future<bool>? returnValue;
     setState(() {
