@@ -114,7 +114,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
 
     await widget.device
         .connect(autoConnect: false)
-        .timeout(Duration(milliseconds: 15000000), onTimeout: () {
+        .timeout(Duration(milliseconds: 15000), onTimeout: () {
       returnValue = Future.value(false);
       debugPrint('timeout failed');
       setBleConnectionState(BluetoothDeviceState.disconnected);
@@ -247,17 +247,31 @@ class _DeviceScreenState extends State<DeviceScreen> {
                         ),
                     ],
                   ),
-                  Expanded(
-                    child: ListView(
-                      padding: EdgeInsets.all(8),
-                      children: bluetoothService.map((service) {
-                        return ListItem(
-                          service: service,
-                          notifyDatas: notifyDatas,
-                        );
-                      }).toList(),
+                  if (deviceState == BluetoothDeviceState.connecting || deviceState == BluetoothDeviceState.disconnected)
+                    Expanded(
+                      child: WatchShape(
+                        builder: (BuildContext context, WearShape shape, Widget? child) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 4.0,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  else
+                    Expanded(
+                      child: ListView(
+                        padding: EdgeInsets.all(8),
+                        children: bluetoothService.map((service) {
+                          return ListItem(
+                            service: service,
+                            notifyDatas: notifyDatas,
+                          );
+                        }).toList(),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),

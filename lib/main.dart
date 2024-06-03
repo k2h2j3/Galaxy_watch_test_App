@@ -144,7 +144,13 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: WatchShape(
         builder: (BuildContext context, WearShape shape, Widget? child) {
-          return ListView.separated(
+          return scanResultList.isEmpty
+              ? Center(
+            child: _isScanning
+                ? CircularProgressIndicator()
+                : Text('No devices found'),
+          )
+              : ListView.separated(
             padding: EdgeInsets.all(8),
             itemCount: scanResultList.length,
             itemBuilder: (context, index) {
