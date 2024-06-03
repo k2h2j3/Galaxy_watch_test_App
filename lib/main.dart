@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:wakelock/wakelock.dart';
 import 'package:wear/wear.dart';
 import 'device_screen.dart';
 
@@ -44,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    Wakelock.enable();
     initBle();
     startScan();
   }
