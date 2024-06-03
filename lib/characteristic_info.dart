@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:wearable_app/date_parser.dart';
@@ -69,52 +70,11 @@ class _CharacteristicInfoState extends State<CharacteristicInfo> {
     }
 
     List<Widget> dataWidgets = [];
-    for (int i = 0; i < resultlist.length; i++) {
-      IconData icon;
-      Color color;
-      String unit;
-      double divider;
+    int temperatureIndex = 0; // 온도에 해당하는 인덱스
 
-      switch (i) {
-        case 0:
-          icon = Icons.thermostat;
-          color = Colors.red;
-          unit = '°C';
-          divider = 100;
-          break;
-        case 1:
-          icon = Icons.water_drop;
-          color = Colors.blue;
-          unit = '%';
-          divider = 100;
-          break;
-        case 2:
-          icon = Icons.speed;
-          color = Colors.green;
-          unit = 'mmHg';
-          divider = 10;
-          break;
-        case 3:
-          icon = Icons.navigation;
-          color = Colors.orange;
-          unit = '°';
-          divider = 10;
-          break;
-        case 4:
-          icon = Icons.wind_power;
-          color = Colors.purple;
-          unit = 'm/s';
-          divider = 100;
-          break;
-        default:
-          icon = Icons.error;
-          color = Colors.grey;
-          unit = '';
-          divider = 1;
-      }
-
-      double currentValue = resultlist[i] / divider;
-      double prevValue = prevResultList[i] / divider;
+    if (resultlist.length > temperatureIndex) {
+      double currentValue = resultlist[temperatureIndex] / 100;
+      double prevValue = prevResultList[temperatureIndex] / 100;
       double diff = currentValue - prevValue;
       String arrow = (diff > 0)
           ? '▲'
@@ -130,62 +90,47 @@ class _CharacteristicInfoState extends State<CharacteristicInfo> {
       dataWidgets.add(
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 1),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(1),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(1),
+                  ),
+                  padding: EdgeInsets.all(1),
+                  child: Icon(Icons.thermostat, size: 24, color: Colors.red),
                 ),
-                padding: EdgeInsets.all(1),
-                child: Icon(icon, size: 6, color: color), // 아이콘 크기 증가
-              ),
-              SizedBox(width: 5),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        '$currentValue',
-                        style: TextStyle(
-                          fontSize: 6,
-                          fontWeight: FontWeight.bold,
+                SizedBox(width: 15),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          '$currentValue',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 3),
-                      Text(
-                        unit,
-                        style: TextStyle(
-                          fontSize: 6,
-                          color: Colors.grey, // 단위 색상 변경
+                        SizedBox(width: 3),
+                        Text(
+                          '°C',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 3),
-                  Row(
-                    children: [
-                      Text(
-                        arrow,
-                        style: TextStyle(fontSize: 6, color: diffColor),
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        '${diff.abs().toStringAsFixed(2)}',
-                        style: TextStyle(fontSize: 6, color: diffColor),
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        unit,
-                        style: TextStyle(fontSize: 6, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                      ],
+                    ),
+                    SizedBox(height: 3),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -200,7 +145,6 @@ class _CharacteristicInfoState extends State<CharacteristicInfo> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             ...dataWidgets,
           ],
         ),
